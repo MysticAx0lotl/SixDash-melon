@@ -1,7 +1,19 @@
 ﻿using System.Collections;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.IO;
+using System;
+using System.Linq;
 
+#if BEPINEX
 using BepInEx;
+using BepInEx.Configuration;
+#elif MELON
+using MelonLoader;
+#endif
+
+using HarmonyLib;
 
 using SixDash.API;
 
@@ -9,11 +21,26 @@ using UnityEngine;
 
 namespace SixDash;
 
+#if BEPINEX
 [BepInPlugin("mod.cgytrus.plugins.sixdash", SixDashPluginInfo.PLUGIN_NAME, SixDashPluginInfo.PLUGIN_VERSION)]
-internal class Plugin : BaseUnityPlugin {
+#endif
+
+internal class SixDash:
+
+#if BEPINEX
+    BaseUnityPlugin
+#elif MELON
+    MelonMod
+#endif
+{
     internal static Plugin? instance { get; private set; }
 
-    private void Awake() {
+    #if BEPINEX
+        private void Awake()
+    #elif MELON
+        public override void OnInitializeMelon()
+    #endif
+    {
         instance = this;
 
         Logger.LogInfo("Loading assets");
